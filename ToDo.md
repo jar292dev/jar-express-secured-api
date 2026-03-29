@@ -1,7 +1,7 @@
 # ToDo
 
 ## Configuración previa
-- [ ] TypeScript
+- [X] TypeScript
 - [ ] Dependencias: Express, Zod, Dotenv, Swagger, Helmet
 - [ ] Linters: ESLint, Prettier
 - [ ] Cliente para peticiones: Bruno
@@ -11,9 +11,9 @@
 
 
 ## Core
-- [ ] Servidor
-- [ ] App
-- [ ] Router
+- [X] Servidor
+- [X] App
+- [X] Router
 - [ ] Conexión a la base de datos
 - [ ] Logger
 - [ ] Definir tipos de error
