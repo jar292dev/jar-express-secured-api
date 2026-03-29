@@ -5,8 +5,8 @@
 - [x] TypeScript
 - [ ] Dependencias: Express, Zod, Dotenv, Swagger, Helmet
 - [x] Linters: ESLint, Prettier
-- [ ] Cliente para peticiones: Bruno
-- [ ] Script backup base de datos
+- [x] Cliente para peticiones: Bruno
+- [x] Script backup base de datos
 - [ ] Instrucciones para agentes, incluir schema.sql en el contexto
 - [ ]
 
