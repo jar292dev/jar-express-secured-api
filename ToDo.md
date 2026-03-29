@@ -1,19 +1,20 @@
 # ToDo
 
 ## Configuración previa
-- [X] TypeScript
+
+- [x] TypeScript
 - [ ] Dependencias: Express, Zod, Dotenv, Swagger, Helmet
-- [ ] Linters: ESLint, Prettier
+- [x] Linters: ESLint, Prettier
 - [ ] Cliente para peticiones: Bruno
 - [ ] Script backup base de datos
 - [ ] Instrucciones para agentes, incluir schema.sql en el contexto
-- [ ] 
-
+- [ ]
 
 ## Core
-- [X] Servidor
-- [X] App
-- [X] Router
+
+- [x] Servidor
+- [x] App
+- [x] Router
 - [ ] Conexión a la base de datos
 - [ ] Logger
 - [ ] Definir tipos de error
@@ -23,9 +24,10 @@
 - [ ] Liquibase
 - [ ] Swagger
 
-
 ## Features
+
 - [ ] Notices (ejemplo CRUD con peticiones de prueba)
 
 ## Bugs
-- [ ] 
+
+- [ ]
