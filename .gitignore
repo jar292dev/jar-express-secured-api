@@ -137,3 +137,15 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Temporary folders
+tmp
+
+# IDE directories and files
+.idea/
+.vscode/
+
+# Custom ignore rules
+# Add any additional files or directories you want to ignore below this line
+backup/
+temp/
