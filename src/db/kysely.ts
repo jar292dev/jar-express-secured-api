@@ -1,4 +1,4 @@
-import { Kysely, PostgresDialect, MysqlDialect } from 'kysely';
+import { Kysely, PostgresDialect, MysqlDialect, CamelCasePlugin } from 'kysely';
 import { Pool } from 'pg';
 import { createPool } from 'mysql2';
 import { Database } from './database.types';
@@ -22,6 +22,7 @@ export class KyselyClient {
             max: 10,
           }),
         }),
+        plugins: [new CamelCasePlugin()], // Opcional: convierte snake_case a camelCase automáticamente
       });
     } else if (dbType === 'mariadb' || dbType === 'mysql') {
       KyselyClient.instance = new Kysely<Database>({
@@ -35,6 +36,7 @@ export class KyselyClient {
             connectionLimit: 10,
           }),
         }),
+        plugins: [new CamelCasePlugin()], // Opcional: convierte snake_case a camelCase automáticamente
       });
     } else {
       throw new Error(`DB_TYPE "${dbType}" not supported.`);
