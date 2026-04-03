@@ -3,7 +3,7 @@ import { ZodSchema } from 'zod';
 import { HTTP_STATUS } from '../constants/http.constants';
 import { ApiError } from '../types/api.types';
 
-export function validateBody(schema: ZodSchema) {
+export function validateBody(schema: ZodSchema<Record<string, unknown>>) {
   return (req: Request, res: Response<ApiError>, next: NextFunction) => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
@@ -16,12 +16,13 @@ export function validateBody(schema: ZodSchema) {
       });
       return;
     }
-    req.body = result.data;
+
+    req.validatedBody = result.data;
     next();
   };
 }
 
-export function validateParams(schema: ZodSchema) {
+export function validateParams(schema: ZodSchema<Record<string, unknown>>) {
   return (req: Request, res: Response<ApiError>, next: NextFunction) => {
     const result = schema.safeParse(req.params);
     if (!result.success) {
@@ -34,13 +35,16 @@ export function validateParams(schema: ZodSchema) {
       });
       return;
     }
+
+    req.validatedParams = result.data;
     next();
   };
 }
 
-export function validateQuery(schema: ZodSchema) {
+export function validateQuery(schema: ZodSchema<Record<string, unknown>>) {
   return (req: Request, res: Response<ApiError>, next: NextFunction) => {
     const result = schema.safeParse(req.query);
+
     if (!result.success) {
       res.status(HTTP_STATUS.BAD_REQUEST).json({
         error: {
@@ -51,7 +55,8 @@ export function validateQuery(schema: ZodSchema) {
       });
       return;
     }
-    req.query = result.data as any;
+
+    req.validatedQuery = result.data;
     next();
   };
 }
