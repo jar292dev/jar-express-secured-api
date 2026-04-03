@@ -12,6 +12,12 @@ export class AppError extends Error {
   }
 }
 
+export class BadRequestError extends AppError {
+  constructor(message: string) {
+    super(ERROR_MESSAGES.BAD_REQUEST(message), HTTP_STATUS.BAD_REQUEST, 'BAD_REQUEST');
+  }
+}
+
 export class NotFoundError extends AppError {
   constructor(resource: string, id: string) {
     super(ERROR_MESSAGES.NOT_FOUND(resource, id), HTTP_STATUS.NOT_FOUND, 'NOT_FOUND');

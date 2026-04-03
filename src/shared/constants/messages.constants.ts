@@ -1,4 +1,5 @@
 export const ERROR_MESSAGES = {
+  BAD_REQUEST: (message: string) => `Bad request: ${message}`,
   NOT_FOUND: (resource: string, id: string) => `${resource} with id "${id}" not found`,
   CONFLICT: (resource: string, field: string) => `${resource} with that ${field} already exists`,
   INTERNAL: 'An unexpected error occurred',
