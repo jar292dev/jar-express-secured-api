@@ -1,52 +1,45 @@
 import { Request, Response, NextFunction } from 'express';
 import { HTTP_STATUS } from '../../shared/constants/http.constants';
 import { ApiResponse } from '../../shared/types/api.types';
-import { NoticeFilterDTO, NoticeIdDTO } from './notices.schema';
+import { CreateNoticeDTO, NoticeFilterDTO } from './notices.schema';
 import { Notice } from './notices.table';
 
 import { NoticesService } from './notices.service';
+import { UUID } from '../../shared/schemas/common.schema';
 
 export class NoticesController {
   constructor(private noticesService: NoticesService) {}
 
-  getNotice = async (
-    req: Request<NoticeIdDTO>,
-    res: Response<ApiResponse<Notice>>,
-    next: NextFunction,
-  ): Promise<void> => {
-    try {
-      const notice = await this.noticesService.getNoticeById(req.params.id);
-      // if (!notice) {
-      //   return res.status(HTTP_STATUS.NOT_FOUND).json({ data: null, meta: { message: 'Aviso no encontrado' } });
-      // }
-      res.status(HTTP_STATUS.OK).json(ApiResponse.success(notice));
-    } catch (err) {
-      next(err);
-    }
+  findNotice = async (req: Request<UUID>, res: Response<ApiResponse<Notice>>): Promise<void> => {
+    const notice = await this.noticesService.findNoticeById(req.params.id);
+    res.status(HTTP_STATUS.OK).json(ApiResponse.success(notice));
   };
 
-  getAllFilteredNotices = async (
+  findAllNotices = async (
     req: Request,
     res: Response<ApiResponse<Notice[]>>,
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const filters = req.query as unknown as NoticeFilterDTO; // ← cast explícito
-      const notices = await this.noticesService.getNoticesWithFilters(filters);
-      res.status(HTTP_STATUS.OK).json(ApiResponse.success(notices));
+      const { page, pageSize, orderBy, orderDirection, ...businessFilters } =
+        req.validatedQuery ?? {};
+      const result = await this.noticesService.findAll(businessFilters, {
+        page,
+        pageSize,
+        orderBy,
+        orderDirection,
+      } as Partial<NoticeFilterDTO>);
+      res.status(HTTP_STATUS.OK).json({ data: result.data, meta: result.meta });
     } catch (err) {
       next(err);
     }
   };
 
-  getAllNotices = async (
-    _req: Request,
-    res: Response<ApiResponse<Notice[]>>,
-    next: NextFunction,
-  ): Promise<void> => {
+  createNotice = async (req: Request, res: Response<ApiResponse<Notice>>, next: NextFunction) => {
     try {
-      const notices = await this.noticesService.getAllNotices();
-      res.status(HTTP_STATUS.OK).json(ApiResponse.success(notices));
+      const dto = req.validatedBody as CreateNoticeDTO;
+      const notice = await this.noticesService.createNotice(dto);
+      res.status(HTTP_STATUS.CREATED).json(ApiResponse.success(notice));
     } catch (err) {
       next(err);
     }

@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import { VALIDATION_MESSAGES } from '../../shared/constants/messages.constants';
-import { paginatedFilterSchema } from '../../shared/schemas/paginatedFilter.schema';
+import { paginatedFilterSchema } from '../../shared/schemas/common.schema';
 
 export const noticeFilterSchema = paginatedFilterSchema.extend({
   title: z.string().optional(),
   body: z.string().optional(),
   level: z.enum(['info', 'warning', 'danger', 'success']).optional(),
-  isActive: z.boolean().optional(),
+  isActive: z.coerce.boolean().optional(),
   startsAt: z.date().optional(),
   endsAt: z.date().optional(),
 });
@@ -21,9 +21,9 @@ export const noticeCreateSchema = z.object({
   level: z.enum(['info', 'warning', 'danger', 'success'], {
     message: VALIDATION_MESSAGES.INVALID_ENUM('level', ['info', 'warning', 'danger', 'success']),
   }),
-  isActive: z.boolean(),
-  startsAt: z.date(),
-  endsAt: z.date(),
+  isActive: z.coerce.boolean(),
+  startsAt: z.date().optional(),
+  endsAt: z.date().optional(),
 });
 
 export const noticeUpdateSchema = z.object({
@@ -35,11 +35,6 @@ export const noticeUpdateSchema = z.object({
   endsAt: z.date().optional(),
 });
 
-export const noticeIdSchema = z.object({
-  id: z.string().uuid(),
-});
-
 export type NoticeFilterDTO = z.infer<typeof noticeFilterSchema>;
 export type CreateNoticeDTO = z.infer<typeof noticeCreateSchema>;
 export type UpdateNoticeDTO = z.infer<typeof noticeUpdateSchema>;
-export type NoticeIdDTO = z.infer<typeof noticeIdSchema>;

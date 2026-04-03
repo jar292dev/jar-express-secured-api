@@ -1,6 +1,11 @@
 import { Router } from 'express';
-import { noticeFilterSchema, noticeIdSchema } from './notices.schema';
-import { validateParams, validateQuery } from '../../shared/middlewares/validate.middleware';
+import { uuidSchema } from '../../shared/schemas/common.schema';
+import { noticeCreateSchema, noticeFilterSchema } from './notices.schema';
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+} from '../../shared/middlewares/validate.middleware';
 import { NoticesController } from './notices.controller';
 import { NoticesService } from './notices.service';
 import { container } from '../../shared/container';
@@ -10,8 +15,10 @@ const controller = new NoticesController(service);
 
 const router = Router();
 
-router.get('/all', controller.getAllNotices);
-router.get('/', validateQuery(noticeFilterSchema), controller.getAllFilteredNotices);
-router.get('/:id', validateParams(noticeIdSchema), controller.getNotice);
+router.get('/', validateQuery(noticeFilterSchema), controller.findAllNotices);
+router.get('/:id', validateParams(uuidSchema), controller.findNotice);
+router.post('/', validateBody(noticeCreateSchema), controller.createNotice);
+// router.put('/:id', validateParams(uuidSchema), controller.updateNotice);
+// router.delete('/:id', validateParams(uuidSchema), controller.deleteNotice);
 
 export default router;

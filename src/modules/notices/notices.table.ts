@@ -5,7 +5,7 @@ export interface NoticesTable extends BaseTable {
   title: string;
   body: string;
   level: 'info' | 'warning' | 'danger' | 'success';
-  isActive: boolean;
+  isActive: 0 | 1; // Usamos 0/1 para booleanos en la base de datos
   startsAt: Date;
   endsAt: Date;
 }
