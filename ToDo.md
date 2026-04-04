@@ -3,7 +3,7 @@
 ## Configuración previa
 
 - [x] TypeScript
-- [ ] Dependencias: Express, Zod, Dotenv, Swagger, Helmet
+- [x] Dependencias: Express, Zod, Dotenv, Swagger, Helmet
 - [x] Linters: ESLint, Prettier
 - [x] Cliente para peticiones: Bruno
 - [x] Script backup base de datos
@@ -15,12 +15,12 @@
 - [x] Servidor
 - [x] App
 - [x] Router
-- [ ] Conexión a la base de datos
+- [x] Conexión a la base de datos
 - [ ] Logger
-- [ ] Definir tipos de error
-- [ ] Definir tipos genericos de respuesta, auditoria, versionado, etc...
-- [ ] Middleware error
-- [ ] Middleware validacion schemas
+- [x] Definir tipos de error
+- [x] Definir tipos genericos de respuesta, auditoria, versionado, etc...
+- [x] Middleware error
+- [x] Middleware validacion schemas
 - [ ] Liquibase
 - [ ] Swagger
 
