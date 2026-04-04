@@ -6,9 +6,9 @@ export const noticeFilterSchema = paginatedFilterSchema.extend({
   title: z.string().optional(),
   body: z.string().optional(),
   level: z.enum(['info', 'warning', 'danger', 'success']).optional(),
-  isActive: z.coerce.boolean().optional(),
-  startsAt: z.date().optional(),
-  endsAt: z.date().optional(),
+  isActive: z.boolean().optional(),
+  startsAt: z.coerce.date().optional(),
+  endsAt: z.coerce.date().optional(),
 });
 
 export const noticeCreateSchema = z.object({
@@ -21,9 +21,9 @@ export const noticeCreateSchema = z.object({
   level: z.enum(['info', 'warning', 'danger', 'success'], {
     message: VALIDATION_MESSAGES.INVALID_ENUM('level', ['info', 'warning', 'danger', 'success']),
   }),
-  isActive: z.coerce.boolean(),
+  isActive: z.boolean().optional().default(true),
   startsAt: z.coerce.date().optional(),
-  endsAt: z.date().optional(),
+  endsAt: z.coerce.date().optional(),
 });
 
 export const noticeUpdateSchema = z.object({
