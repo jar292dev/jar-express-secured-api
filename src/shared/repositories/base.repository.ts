@@ -1,8 +1,6 @@
-import { prisma } from '../../database/prisma.client';
 import { BaseEntity } from '../types/base.entity';
 import { PaginatedFilter } from '../schemas/common.schema';
 import { PaginatedResult } from '../types/api.types';
-import { Notice } from '../../generated/prisma';
 
 // T = tipo del modelo (Notice, User, etc.)
 // W = tipo del where de Prisma (Prisma.NoticeWhereInput, etc.)
