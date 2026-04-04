@@ -14,3 +14,4 @@ API Rest Modular (Screaming Arquitecture) con Patrón Repositorio y validación 
 - [x] Cliente para peticiones: Bruno
 - [x] Script backup base de datos
 - [x] Swagger
+- [x] Vitest + Supertest
