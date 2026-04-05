@@ -1,5 +1,6 @@
 import { AuditRepository } from './shared/repositories/audit.repository';
 import { NoticesRepository } from './modules/notices/notices.repository';
+import { UsersRepository } from './modules/users/users.repository';
 import { NoticesService } from './modules/notices/notices.service';
 import { AuthRepository } from './modules/auth/auth.repository';
 import { AuthService } from './modules/auth/auth.service';
@@ -16,4 +17,5 @@ export const container = {
   authService: new AuthService(authRepository, loginAuditRepository),
   noticesRepository: new NoticesRepository(),
   noticesService: new NoticesService(new NoticesRepository(), auditRepository),
+  usersRepository: new UsersRepository(),
 };
