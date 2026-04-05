@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -13,13 +8,75 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// =============================================
+// Enums
+// =============================================
+
+enum NoticeLevel {
+  info
+  warning
+  danger
+  success
+}
+
+enum UserRole {
+  admin
+  moderator
+  user
+}
+
+// =============================================
+// Models
+// =============================================
+
+model User {
+  id                  String    @id @db.Char(36)
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+  version             Int       @default(1)
+
+  // Identidad
+  email               String    @unique
+  username            String?   @unique
+  passwordHash        String    @map("password_hash")
+
+  // Perfil
+  firstName           String?   @map("first_name")
+  lastName            String?   @map("last_name")
+  avatarUrl           String?   @map("avatar_url")
+  locale              String?   @default("es")
+
+  // Rol
+  role                UserRole  @default(user)
+
+  // Estado
+  isActive            Boolean   @default(true) @map("is_active")
+  isEmailVerified     Boolean   @default(false) @map("is_email_verified")
+  emailVerifiedAt     DateTime? @map("email_verified_at")
+
+  // Seguridad
+  failedLoginAttempts Int       @default(0) @map("failed_login_attempts")
+  lockedUntil         DateTime? @map("locked_until")
+  passwordChangedAt   DateTime? @map("password_changed_at")
+  lastLoginAt         DateTime? @map("last_login_at")
+
+  // Auditoría de actor
+  createdBy           String?   @map("created_by")
+  updatedBy           String?   @map("updated_by")
+
+  // Relaciones
+  loginAudit          UserLoginAudit[]
+
+  @@map("users")
+}
+
 model Notice {
-  id        String      @id @default(uuid()) @db.Char(36)
+  id        String      @id @db.Char(36)
   createdAt DateTime    @default(now()) @map("created_at")
   updatedAt DateTime    @updatedAt @map("updated_at")
-  createdBy String?     @map("created_by")
-  updatedBy String?     @map("updated_by")
   version   Int         @default(1)
+
+  // Campos propios
   title     String
   body      String
   level     NoticeLevel
@@ -27,12 +84,17 @@ model Notice {
   startsAt  DateTime?   @map("starts_at")
   endsAt    DateTime?   @map("ends_at")
 
+  // Auditoría de actor
+  createdBy String?     @map("created_by")
+  updatedBy String?     @map("updated_by")
+
   @@map("notices")
 }
 
 model AuditLog {
-  id        String   @id @default(uuid()) @db.Char(36)
+  id        String   @id @db.Char(36)
   createdAt DateTime @default(now()) @map("created_at")
+
   entity    String
   entityId  String   @map("entity_id")
   action    String
@@ -40,14 +102,40 @@ model AuditLog {
   before    Json?
   after     Json?
 
-  @@map("audit_logs")
   @@index([entity, entityId])
   @@index([actorId])
+  @@map("audit_logs")
 }
 
-enum NoticeLevel {
-  info
-  warning
-  danger
-  success
+model UserLoginAudit {
+  id            String   @id @db.Char(36)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // Quién
+  userId        String?  @map("user_id")
+  email         String
+
+  // Resultado
+  action        String
+  success       Boolean  @default(false)
+  failureReason String?  @map("failure_reason")
+
+  // Contexto técnico
+  ipAddress     String?  @map("ip_address")
+  userAgent     String?  @map("user_agent")
+  deviceType    String?  @map("device_type")
+  location      String?
+
+  // Sesión
+  sessionId     String?  @map("session_id")
+  tokenJti      String?  @map("token_jti")
+
+  // Relación
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([email])
+  @@index([createdAt])
+  @@index([action])
+  @@map("user_login_audit")
 }

@@ -44,3 +44,41 @@ ALTER TABLE `users`
 -- Índice opcional, útil si filtras usuarios por rol
 ALTER TABLE `users`
   ADD INDEX `users_role_idx` (`role`);
+
+CREATE TABLE `user_login_audit` (
+  `id`             CHAR(36)      NOT NULL,
+  `created_at`     DATETIME(3)   NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+  -- Quién
+  `user_id`        CHAR(36)          NULL,  -- NULL si el usuario no existe
+  `email`          VARCHAR(255)  NOT NULL,  -- email intentado aunque no exista
+
+  -- Resultado
+  `action`         VARCHAR(50)   NOT NULL,  -- LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT,
+                                            -- PASSWORD_RESET_REQUESTED, ACCOUNT_LOCKED
+  `success`        TINYINT(1)    NOT NULL DEFAULT 0,
+  `failure_reason` VARCHAR(100)      NULL,  -- INVALID_PASSWORD, USER_NOT_FOUND,
+                                            -- ACCOUNT_LOCKED, EMAIL_NOT_VERIFIED
+
+  -- Contexto técnico
+  `ip_address`     VARCHAR(45)       NULL,  -- VARCHAR(45) soporta IPv6
+  `user_agent`     VARCHAR(500)      NULL,
+  `device_type`    VARCHAR(50)       NULL,  -- desktop, mobile, tablet
+  `location`       VARCHAR(255)      NULL,  -- país/ciudad si usas geolocalización
+
+  -- Sesión
+  `session_id`     VARCHAR(255)      NULL,
+  `token_jti`      VARCHAR(255)      NULL,  -- JWT ID para blacklisting
+
+  PRIMARY KEY (`id`),
+  INDEX `user_login_audit_user_id_idx`   (`user_id`),
+  INDEX `user_login_audit_email_idx`     (`email`),
+  INDEX `user_login_audit_created_at_idx` (`created_at`),
+  INDEX `user_login_audit_action_idx`    (`action`),
+
+  CONSTRAINT `fk_user_login_audit_user`
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
