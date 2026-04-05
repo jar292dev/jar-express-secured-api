@@ -31,13 +31,13 @@ export class ConflictError extends AppError {
 }
 
 export class UnauthorizedError extends AppError {
-  constructor() {
-    super(ERROR_MESSAGES.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED, 'UNAUTHORIZED');
+  constructor(message: string = ERROR_MESSAGES.UNAUTHORIZED) {
+    super(message, HTTP_STATUS.UNAUTHORIZED, 'UNAUTHORIZED');
   }
 }
 
 export class ForbiddenError extends AppError {
-  constructor() {
-    super(ERROR_MESSAGES.FORBIDDEN, HTTP_STATUS.FORBIDDEN, 'FORBIDDEN');
+  constructor(message: string = ERROR_MESSAGES.FORBIDDEN) {
+    super(message, HTTP_STATUS.FORBIDDEN, 'FORBIDDEN');
   }
 }
