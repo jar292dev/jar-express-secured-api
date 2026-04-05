@@ -6,6 +6,7 @@ import { env } from '../config/env';
 
 // Importar los docs de cada módulo para que se auto-registren
 import '../modules/notices/notices.docs';
+import '../modules/auth/auth.docs';
 
 function generateSpec() {
   const generator = new OpenApiGeneratorV3(registry.definitions);
