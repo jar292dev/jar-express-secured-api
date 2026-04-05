@@ -17,6 +17,13 @@ const envSchema = z.object({
   DB_PASSWORD: z.string().default('password'),
   DB_NAME: z.string().default('quevemosestefinde'),
   DB_POOL_SIZE: z.coerce.number().default(10),
+
+  // ─── JWT ───────────────────────────────────────────────
+  JWT_ACCESS_SECRET: z.string().default('access-secret'),
+  JWT_REFRESH_SECRET: z.string().default('refresh-secret'),
+  JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
+  JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
+  COOKIE_SECRET: z.string().default('cookie-secret'),
 });
 
 // Validación al arrancar — falla rápido si falta algo crítico
