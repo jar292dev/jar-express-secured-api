@@ -1,5 +1,8 @@
 import express, { Application } from 'express';
 import morgan from 'morgan';
+import cors from 'cors';
+import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import { v1Router } from './router';
 import { env } from './config/env';
 import { errorMiddleware } from './shared/middlewares/error.middleware';
@@ -9,10 +12,22 @@ import { requestContextMiddleware } from './shared/middlewares/request-context.m
 // ─── Inicialización de la aplicación ─────────────────────────────────────────────
 const app: Application = express();
 
+// ─── Middlewares de seguridad ─────────────────────────────────────────────
+app.use(helmet());
+app.use(
+  cors({
+    origin: env.CORS_ORIGIN,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type'],
+  }),
+);
+
 // ─── Middlewares globales ─────────────────────────────────────────────
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(requestContextMiddleware);
+app.use(cookieParser());
 
 // ─── Logger ─────────────────────────────────────────────
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
