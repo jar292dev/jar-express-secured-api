@@ -14,7 +14,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:schema:export": "npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > docs/schema.sql"
   },
   "repository": {
     "type": "git",
