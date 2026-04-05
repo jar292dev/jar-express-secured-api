@@ -1,20 +1,20 @@
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import { registry } from '../../docs/openapi.registry';
-import { noticeCreateSchema, noticeUpdateSchema, noticeFilterSchema } from './notices.schema';
+import {
+  noticeCreateSchema,
+  noticeUpdateSchema,
+  noticeFilterSchema,
+  noticeResponseSchema,
+} from './notices.schema';
 
 extendZodWithOpenApi(z);
 
 // Registra el schema como componente reutilizable
-const NoticeSchema = registry.register(
-  'Notice',
-  noticeCreateSchema.extend({
-    id: z.string().uuid().openapi({ example: 'uuid-here' }),
-    createdAt: z.date(),
-    updatedAt: z.date(),
-    version: z.number(),
-  }),
-);
+const NoticeSchema = registry.register('Notice', noticeResponseSchema);
+registry.register('NoticeFilter', noticeFilterSchema);
+registry.register('NoticeCreate', noticeCreateSchema);
+registry.register('NoticeUpdate', noticeUpdateSchema);
 
 // GET /notices
 registry.registerPath({
