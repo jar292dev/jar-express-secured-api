@@ -1,4 +1,5 @@
 import { prisma } from '../../database/prisma.client';
+import { v7 as uuidv7 } from 'uuid';
 
 type AuditAction = 'CREATE' | 'UPDATE' | 'DELETE';
 
@@ -15,6 +16,7 @@ export class AuditRepository {
   async log(params: CreateAuditLogParams): Promise<void> {
     await prisma.auditLog.create({
       data: {
+        id: uuidv7(),
         entity: params.entity,
         entityId: params.entityId,
         action: params.action,

@@ -10,6 +10,13 @@ const testUser = {
   lastName: 'User',
 };
 
+function extractCookies(res: request.Response): string[] {
+  const cookies = res.headers['set-cookie'];
+  if (!cookies) return [];
+  const raw = Array.isArray(cookies) ? cookies : [cookies];
+  return raw.map((cookie) => cookie.split(';')[0]);
+}
+
 let userId: string;
 
 beforeAll(async () => {

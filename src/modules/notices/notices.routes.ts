@@ -37,7 +37,7 @@ router.delete(
   '/:id',
   authenticate,
   authorize('admin'),
-  validateBody(noticeUpdateSchema),
+  validateParams(uuidSchema),
   controller.deleteNotice,
 );
 

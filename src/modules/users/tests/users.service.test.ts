@@ -80,7 +80,12 @@ describe('UsersService', () => {
       mockUsersRepository.findById.mockResolvedValue(mockUser);
 
       const result = await service.create(
-        { email: 'test@example.com', password: 'Password123!' },
+        {
+          email: 'test@example.com',
+          password: 'Password123!',
+          role: 'user',
+          isActive: true,
+        },
         mockContext,
       );
 
@@ -94,7 +99,15 @@ describe('UsersService', () => {
       mockAuthRepository.findUserByEmail.mockResolvedValue(mockUser);
 
       await expect(
-        service.create({ email: 'test@example.com', password: 'Password123!' }, mockContext),
+        service.create(
+          {
+            email: 'test@example.com',
+            password: 'Password123!',
+            role: 'user',
+            isActive: true,
+          },
+          mockContext,
+        ),
       ).rejects.toThrow(ConflictError);
 
       expect(mockAuthRepository.createUser).not.toHaveBeenCalled();
