@@ -18,6 +18,10 @@ const envSchema = z.object({
   DB_NAME: z.string().default('quevemosestefinde'),
   DB_POOL_SIZE: z.coerce.number().default(10),
 
+  // ─── Admin ───────────────────────────────────────────────
+  ADMIN_EMAIL: z.string().email().default('admin@example.com'),
+  ADMIN_PASSWORD: z.string().default('Admin1234!'),
+
   // ─── JWT ───────────────────────────────────────────────
   JWT_ACCESS_SECRET: z.string().default('access-secret'),
   JWT_REFRESH_SECRET: z.string().default('refresh-secret'),
