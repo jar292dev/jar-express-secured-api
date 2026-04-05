@@ -82,3 +82,24 @@ CREATE TABLE `user_login_audit` (
     ON UPDATE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `refresh_tokens` (
+  `id`         CHAR(36)     NOT NULL,
+  `created_at` DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `expires_at` DATETIME(3)  NOT NULL,
+  `user_id`    CHAR(36)     NOT NULL,
+  `token_hash` VARCHAR(255) NOT NULL,
+  `is_revoked` TINYINT(1)   NOT NULL DEFAULT 0,
+  `ip_address` VARCHAR(45)      NULL,
+  `user_agent` VARCHAR(500)     NULL,
+
+  PRIMARY KEY (`id`),
+  INDEX `refresh_tokens_user_id_idx` (`user_id`),
+  INDEX `refresh_tokens_token_hash_idx` (`token_hash`),
+
+  CONSTRAINT `fk_refresh_tokens_user`
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_c

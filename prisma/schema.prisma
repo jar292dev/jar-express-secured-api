@@ -66,6 +66,7 @@ model User {
 
   // Relaciones
   loginAudit          UserLoginAudit[]
+  refreshTokens  RefreshToken[]
 
   @@map("users")
 }
@@ -138,4 +139,21 @@ model UserLoginAudit {
   @@index([createdAt])
   @@index([action])
   @@map("user_login_audit")
+}
+
+model RefreshToken {
+  id         String   @id @db.Char(36)
+  createdAt  DateTime @default(now()) @map("created_at")
+  expiresAt  DateTime @map("expires_at")
+  userId     String   @map("user_id")
+  tokenHash  String   @map("token_hash")
+  isRevoked  Boolean  @default(false) @map("is_revoked")
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+  @@map("refresh_tokens")
 }
