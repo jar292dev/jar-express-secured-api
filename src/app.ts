@@ -4,10 +4,17 @@ import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { v1Router } from './router';
+import webRouter from './web.router';
 import { env } from './config/env';
 import { errorMiddleware } from './shared/middlewares/error.middleware';
 import { mountSwagger } from './docs/openapi';
 import { requestContextMiddleware } from './shared/middlewares/request-context.middleware';
+import path from 'path';
+import expressLayouts from 'express-ejs-layouts';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // ─── Inicialización de la aplicación ─────────────────────────────────────────────
 const app: Application = express();
@@ -32,6 +39,13 @@ app.use(cookieParser());
 // ─── Logger ─────────────────────────────────────────────
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
+// ─── Configuración de vistas ─────────────────────────────────────────────
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use(expressLayouts);
+app.set('layout', 'layouts/main');
+app.use(express.static(path.join(__dirname, '../public')));
+
 // ─── Rutas de la API ─────────────────────────────────────────────
 
 // Ruta de salud para monitoreo
@@ -48,6 +62,8 @@ mountSwagger(app);
 
 // Resto de rutas
 app.use('/api/v1', v1Router);
+
+app.use('/', webRouter);
 
 // ─── Middleware de error ─────────────────────────────────────────────
 app.use(errorMiddleware);

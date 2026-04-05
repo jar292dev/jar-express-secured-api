@@ -1,0 +1,176 @@
+<style>
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .stat-card .stat-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-card .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.875rem;
+  }
+
+  .section-header h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .section-header a {
+    font-size: 0.8rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .section-header a:hover { text-decoration: underline; }
+
+  .list-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.875rem;
+    gap: 1rem;
+  }
+
+  .list-item:last-child { border-bottom: none; }
+  .list-item:hover { background: var(--surface-2); }
+
+  .list-item-title { font-weight: 500; }
+  .list-item-sub   { font-size: 0.775rem; color: var(--text-muted); margin-top: 0.1rem; }
+
+  .list-item a { color: var(--text); text-decoration: none; }
+  .list-item a:hover { color: var(--accent); }
+
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+  }
+
+  .badge-info    { background: #1e3a5f; color: #3b82f6; }
+  .badge-warning { background: #3d2e0a; color: #f59e0b; }
+  .badge-danger  { background: #3d1515; color: #ef4444; }
+  .badge-success { background: #0f3022; color: #22c55e; }
+
+  .welcome {
+    margin-bottom: 2rem;
+  }
+
+  .welcome h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+  }
+
+  .welcome p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+</style>
+
+<div class="welcome">
+  <h1>Dashboard</h1>
+  <p>Resumen general del sistema</p>
+</div>
+
+<div class="dashboard-grid">
+  <div class="stat-card">
+    <div class="stat-label">Avisos totales</div>
+    <div class="stat-value"><%= noticesTotal %></div>
+  </div>
+  <% if (actorRole === 'admin') { %>
+  <div class="stat-card">
+    <div class="stat-label">Usuarios totales</div>
+    <div class="stat-value"><%= usersTotal %></div>
+  </div>
+  <% } %>
+</div>
+
+<div class="section-header">
+  <h2>Últimos avisos</h2>
+  <a href="/notices">Ver todos →</a>
+</div>
+
+<div class="list-card">
+  <% if (notices.length === 0) { %>
+    <div class="list-item" style="color: var(--text-muted)">No hay avisos</div>
+  <% } else { %>
+    <% notices.forEach(notice => { %>
+      <div class="list-item">
+        <div>
+          <a href="/notices/<%= notice.id %>">
+            <div class="list-item-title"><%= notice.title %></div>
+            <div class="list-item-sub"><%= new Date(notice.createdAt).toLocaleDateString('es') %></div>
+          </a>
+        </div>
+        <span class="badge badge-<%= notice.level %>"><%= notice.level %></span>
+      </div>
+    <% }) %>
+  <% } %>
+</div>
+
+<% if (actorRole === 'admin') { %>
+<div class="section-header">
+  <h2>Últimos usuarios</h2>
+  <a href="/users">Ver todos →</a>
+</div>
+
+<div class="list-card">
+  <% if (users.length === 0) { %>
+    <div class="list-item" style="color: var(--text-muted)">No hay usuarios</div>
+  <% } else { %>
+    <% users.forEach(user => { %>
+      <div class="list-item">
+        <div>
+          <div class="list-item-title"><%= user.firstName ?? '' %> <%= user.lastName ?? '' %> <%= !user.firstName && !user.lastName ? user.email : '' %></div>
+          <div class="list-item-sub"><%= user.email %> · <%= user.role %></div>
+        </div>
+        <span class="badge <%= user.isActive ? 'badge-success' : 'badge-danger' %>">
+          <%= user.isActive ? 'Activo' : 'Inactivo' %>
+        </span>
+      </div>
+    <% }) %>
+  <% } %>
+</div>
+<% } %>

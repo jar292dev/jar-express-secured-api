@@ -1,0 +1,327 @@
+<style>
+  .filters-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 160px;
+  }
+
+  .filter-field label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  .filter-field input,
+  .filter-field select {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: var(--text);
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .filter-field input:focus,
+  .filter-field select:focus { border-color: var(--accent); }
+
+  .search-live {
+    flex: 1;
+    min-width: 220px;
+  }
+
+  .search-live input {
+    width: 100%;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  th {
+    text-align: left;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.875rem;
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface-2); }
+
+  .user-info { display: flex; align-items: center; gap: 0.75rem; }
+
+  .avatar-sm {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .user-name  { font-weight: 500; font-size: 0.875rem; }
+  .user-email { font-size: 0.775rem; color: var(--text-muted); }
+
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .badge-admin     { background: #3d2e0a; color: #f59e0b; }
+  .badge-moderator { background: #1e3a5f; color: #3b82f6; }
+  .badge-user      { background: #1f1f1f; color: #888; border: 1px solid #333; }
+  .badge-active    { background: #0f3022; color: #22c55e; }
+  .badge-inactive  { background: #3d1515; color: #ef4444; }
+
+  .actions { display: flex; gap: 0.4rem; }
+
+  .table-meta {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.775rem;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border-top: 1px solid var(--border);
+  }
+
+  .empty {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  #live-results {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 50;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .live-item {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .live-item:last-child { border-bottom: none; }
+  .live-item:hover { background: var(--surface-2); }
+  .live-item-email { color: var(--text-muted); font-size: 0.775rem; }
+
+  .search-wrap { position: relative; }
+</style>
+
+<div class="page-header">
+  <h1>Usuarios</h1>
+  <a href="/users/create" class="btn btn-primary">+ Nuevo usuario</a>
+</div>
+
+<!-- Filtros -->
+<form method="GET" action="/users">
+  <div class="filters-bar">
+
+    <div class="filter-field search-live">
+      <label for="q-filter">Buscar</label>
+      <div class="search-wrap">
+        <input
+          type="text"
+          id="q-filter"
+          name="email"
+          placeholder="Email o username..."
+          value="<%= filters.email ?? '' %>"
+          autocomplete="off"
+        />
+        <div id="live-results"></div>
+      </div>
+    </div>
+
+    <div class="filter-field">
+      <label for="role-filter">Rol</label>
+      <select id="role-filter" name="role">
+        <option value="">Todos</option>
+        <% ['admin','moderator','user'].forEach(r => { %>
+          <option value="<%= r %>" <%= filters.role === r ? 'selected' : '' %>>
+            <%= r.charAt(0).toUpperCase() + r.slice(1) %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="filter-field">
+      <label for="active-filter">Estado</label>
+      <select id="active-filter" name="isActive">
+        <option value="">Todos</option>
+        <option value="true"  <%= filters.isActive === 'true'  ? 'selected' : '' %>>Activos</option>
+        <option value="false" <%= filters.isActive === 'false' ? 'selected' : '' %>>Inactivos</option>
+      </select>
+    </div>
+
+    <div style="display:flex; gap:0.5rem; align-self:flex-end">
+      <button type="submit" class="btn btn-primary">Buscar</button>
+      <a href="/users" class="btn btn-ghost">Limpiar</a>
+    </div>
+
+  </div>
+</form>
+
+<!-- Tabla -->
+<div class="card">
+  <% if (users.length === 0) { %>
+    <div class="empty">No se encontraron usuarios</div>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Último acceso</th>
+          <th>Registrado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="users-tbody">
+        <% users.forEach(user => { %>
+          <tr>
+            <td>
+              <div class="user-info">
+                <div class="avatar-sm">
+                  <%= (user.firstName ?? user.email).charAt(0).toUpperCase() %>
+                </div>
+                <div>
+                  <div class="user-name">
+                    <%= user.firstName ?? '' %> <%= user.lastName ?? '' %>
+                    <% if (!user.firstName && !user.lastName) { %><%= user.email %><% } %>
+                  </div>
+                  <div class="user-email"><%= user.email %></div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge badge-<%= user.role %>"><%= user.role %></span></td>
+            <td>
+              <span class="badge <%= user.isActive ? 'badge-active' : 'badge-inactive' %>">
+                <%= user.isActive ? 'Activo' : 'Inactivo' %>
+              </span>
+            </td>
+            <td><%= user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleDateString('es') : '—' %></td>
+            <td><%= new Date(user.createdAt).toLocaleDateString('es') %></td>
+            <td>
+              <div class="actions">
+                <a href="/users/<%= user.id %>" class="btn btn-ghost">Ver</a>
+                <a href="/users/<%= user.id %>/edit" class="btn btn-ghost">Editar</a>
+                <form method="POST" action="/users/<%= user.id %>/delete" style="margin:0">
+                  <button type="submit" class="btn btn-danger"
+                    onclick="return confirm('¿Eliminar a <%= user.email %>?')">
+                    Eliminar
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <div class="table-meta">
+      Mostrando <%= users.length %> de <%= meta.total %> usuarios —
+      Página <%= meta.page %> de <%= meta.pages %>
+    </div>
+  <% } %>
+</div>
+
+<!-- Búsqueda en tiempo real -->
+<script>
+  const input = document.getElementById('q-filter');
+  const results = document.getElementById('live-results');
+  let timer;
+
+  input.addEventListener('input', () => {
+    clearTimeout(timer);
+    const q = input.value.trim();
+
+    if (q.length < 2) {
+      results.style.display = 'none';
+      return;
+    }
+
+    timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/users/search?q=${encodeURIComponent(q)}`);
+        const json = await res.json();
+
+        if (!json.data.length) {
+          results.style.display = 'none';
+          return;
+        }
+
+        results.innerHTML = json.data.map(u => `
+          <a class="live-item" href="/users/${u.id}">
+            <div>
+              <div>${u.firstName ?? ''} ${u.lastName ?? ''} ${!u.firstName && !u.lastName ? u.email : ''}</div>
+              <div class="live-item-email">${u.email}</div>
+            </div>
+            <span class="badge badge-${u.role}">${u.role}</span>
+          </a>
+        `).join('');
+
+        results.style.display = 'block';
+      } catch (e) {
+        results.style.display = 'none';
+      }
+    }, 300);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!input.contains(e.target) && !results.contains(e.target)) {
+      results.style.display = 'none';
+    }
+  });
+</script>

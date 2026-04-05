@@ -1,0 +1,252 @@
+<style>
+  .back { margin-bottom: 1.5rem; }
+
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 640px;
+  }
+
+  .form-card-header {
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+
+  .form-card-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .form-body {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .field label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  .field input,
+  .field select {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.875rem;
+    font-size: 0.9rem;
+    color: var(--text);
+    font-family: inherit;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s;
+  }
+
+  .field input:focus,
+  .field select:focus { border-color: var(--accent); }
+
+  .field input:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.4rem;
+  }
+
+  .toggle {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+
+  .toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+
+  .toggle input:checked + .toggle-slider { background: var(--accent); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+  .toggle-label { font-size: 0.875rem; color: var(--text-muted); }
+
+  .alert {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    border: 1px solid var(--danger);
+    background: var(--danger-bg);
+    color: var(--danger);
+  }
+
+  .form-footer {
+    padding: 1.25rem 1.75rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface-2);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  .field .hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+  }
+</style>
+
+<div class="back">
+  <a href="/users" class="btn btn-ghost">← Volver a usuarios</a>
+</div>
+
+<div class="form-card">
+  <div class="form-card-header">
+    <h2><%= user ? 'Editar usuario' : 'Nuevo usuario' %></h2>
+  </div>
+
+  <form method="POST" action="<%= user ? '/users/' + user.id : '/users' %>">
+    <div class="form-body">
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert"><%= error %></div>
+      <% } %>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="firstName">Nombre</label>
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            placeholder="Juan"
+            value="<%= user ? user.firstName ?? '' : (typeof values !== 'undefined' ? values.firstName ?? '' : '') %>"
+          />
+        </div>
+        <div class="field">
+          <label for="lastName">Apellido</label>
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            placeholder="López"
+            value="<%= user ? user.lastName ?? '' : (typeof values !== 'undefined' ? values.lastName ?? '' : '') %>"
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="usuario@example.com"
+          value="<%= user ? user.email : (typeof values !== 'undefined' ? values.email ?? '' : '') %>"
+          <%= user ? 'disabled' : 'required' %>
+        />
+        <% if (user) { %>
+          <span class="hint">El email no se puede modificar</span>
+        <% } %>
+      </div>
+
+      <% if (!user) { %>
+      <div class="field">
+        <label for="password">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Mínimo 8 caracteres"
+          required
+        />
+      </div>
+      <% } %>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="role">Rol</label>
+          <select id="role" name="role">
+            <% ['admin','moderator','user'].forEach(r => { %>
+              <option value="<%= r %>"
+                <%= (user ? user.role : 'user') === r ? 'selected' : '' %>>
+                <%= r.charAt(0).toUpperCase() + r.slice(1) %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Estado</label>
+          <div class="toggle-row">
+            <label class="toggle">
+              <input
+                type="checkbox"
+                name="isActive"
+                value="true"
+                <%= !user || user.isActive ? 'checked' : '' %>
+              />
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label">Cuenta activa</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-footer">
+      <a href="/users" class="btn btn-ghost">Cancelar</a>
+      <button type="submit" class="btn btn-primary">
+        <%= user ? 'Guardar cambios' : 'Crear usuario' %>
+      </button>
+    </div>
+
+  </form>
+</div>

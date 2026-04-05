@@ -1,0 +1,245 @@
+<style>
+  .back { margin-bottom: 1.5rem; }
+
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 680px;
+  }
+
+  .form-card-header {
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+
+  .form-card-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .form-body {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .field label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  .field input,
+  .field textarea,
+  .field select {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.875rem;
+    font-size: 0.9rem;
+    color: var(--text);
+    font-family: inherit;
+    transition: border-color 0.15s;
+    outline: none;
+    width: 100%;
+  }
+
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus { border-color: var(--accent); }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+  }
+
+  .field select option {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .toggle {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+
+  .toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+
+  .toggle input:checked + .toggle-slider { background: var(--accent); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+  .toggle-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  .form-footer {
+    padding: 1.25rem 1.75rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface-2);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  .level-info    { border-left: 3px solid var(--info) !important; }
+  .level-warning { border-left: 3px solid var(--warning) !important; }
+  .level-danger  { border-left: 3px solid var(--danger) !important; }
+  .level-success { border-left: 3px solid var(--success) !important; }
+</style>
+
+<div class="back">
+  <a href="/notices" class="btn btn-ghost">← Volver a avisos</a>
+</div>
+
+<div class="form-card">
+  <div class="form-card-header">
+    <h2><%= notice ? 'Editar aviso' : 'Nuevo aviso' %></h2>
+  </div>
+
+  <form method="POST" action="<%= notice ? '/notices/' + notice.id : '/notices' %>">
+    <div class="form-body">
+
+      <div class="field">
+        <label for="title">Título</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          placeholder="Título del aviso"
+          value="<%= notice ? notice.title : '' %>"
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label for="body">Contenido</label>
+        <textarea
+          id="body"
+          name="body"
+          placeholder="Descripción del aviso..."
+          required
+        ><%= notice ? notice.body : '' %></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="level">Nivel</label>
+          <select
+            id="level"
+            name="level"
+            class="<%= notice ? 'level-' + notice.level : 'level-info' %>"
+            onchange="this.className='level-' + this.value"
+          >
+            <% ['info', 'warning', 'danger', 'success'].forEach(l => { %>
+              <option value="<%= l %>" <%= notice && notice.level === l ? 'selected' : '' %>>
+                <%= l.charAt(0).toUpperCase() + l.slice(1) %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Estado</label>
+          <div class="toggle-row" style="margin-top: 0.5rem">
+            <label class="toggle">
+              <input
+                type="checkbox"
+                name="isActive"
+                value="true"
+                <%= !notice || notice.isActive ? 'checked' : '' %>
+              />
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label">Aviso activo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="startsAt">Fecha de inicio</label>
+          <input
+            type="datetime-local"
+            id="startsAt"
+            name="startsAt"
+            value="<%= notice && notice.startsAt ? new Date(notice.startsAt).toISOString().slice(0,16) : '' %>"
+          />
+        </div>
+
+        <div class="field">
+          <label for="endsAt">Fecha de fin</label>
+          <input
+            type="datetime-local"
+            id="endsAt"
+            name="endsAt"
+            value="<%= notice && notice.endsAt ? new Date(notice.endsAt).toISOString().slice(0,16) : '' %>"
+          />
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-footer">
+      <a href="/notices" class="btn btn-ghost">Cancelar</a>
+      <button type="submit" class="btn btn-primary">
+        <%= notice ? 'Guardar cambios' : 'Crear aviso' %>
+      </button>
+    </div>
+
+  </form>
+</div>

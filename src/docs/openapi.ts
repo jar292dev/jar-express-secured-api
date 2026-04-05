@@ -33,7 +33,7 @@ export function mountSwagger(app: Application): void {
   const spec = generateSpec();
 
   app.use(
-    '/api/docs',
+    '/api/v1/docs',
     swaggerUi.serve,
     swaggerUi.setup(spec, {
       customSiteTitle: 'Football API Docs',

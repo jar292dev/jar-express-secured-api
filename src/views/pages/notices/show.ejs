@@ -1,0 +1,151 @@
+<style>
+  .back { margin-bottom: 1.5rem; }
+
+  .detail-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .detail-header {
+    padding: 1.5rem 1.75rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .detail-header-left h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .detail-header-left .badges {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .detail-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .detail-body {
+    padding: 1.75rem;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .detail-meta {
+    padding: 1.25rem 1.75rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .meta-item label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .meta-item span {
+    font-size: 0.875rem;
+    color: var(--text);
+  }
+
+  .detail-footer {
+    padding: 1rem 1.75rem;
+    background: var(--surface-2);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .detail-footer span strong {
+    color: var(--text);
+  }
+</style>
+
+<div class="back">
+  <a href="/notices" class="btn btn-ghost">← Volver a avisos</a>
+</div>
+
+<div class="detail-card">
+  <div class="detail-header">
+    <div class="detail-header-left">
+      <h2><%= notice.title %></h2>
+      <div class="badges">
+        <span class="badge badge-<%= notice.level %>"><%= notice.level %></span>
+        <span class="badge <%= notice.isActive ? 'badge-active' : 'badge-inactive' %>">
+          <%= notice.isActive ? 'Activo' : 'Inactivo' %>
+        </span>
+      </div>
+    </div>
+    <div class="detail-actions">
+      <a href="/notices/<%= notice.id %>/edit" class="btn btn-ghost">Editar</a>
+      <form method="POST" action="/notices/<%= notice.id %>/delete" style="margin:0">
+        <button type="submit" class="btn btn-danger"
+          onclick="return confirm('¿Eliminar este aviso?')">
+          Eliminar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="detail-body">
+    <%= notice.body %>
+  </div>
+
+  <div class="detail-meta">
+    <div class="meta-item">
+      <label>Inicio</label>
+      <span><%= notice.startsAt ? new Date(notice.startsAt).toLocaleString('es') : '—' %></span>
+    </div>
+    <div class="meta-item">
+      <label>Fin</label>
+      <span><%= notice.endsAt ? new Date(notice.endsAt).toLocaleString('es') : '—' %></span>
+    </div>
+    <div class="meta-item">
+      <label>Versión</label>
+      <span><%= notice.version %></span>
+    </div>
+    <div class="meta-item">
+      <label>ID</label>
+      <span style="font-family: monospace; font-size: 0.8rem; color: var(--text-muted)">
+        <%= notice.id %>
+      </span>
+    </div>
+    <% if (notice.createdBy) { %>
+    <div class="meta-item">
+      <label>Creado por</label>
+      <span style="font-family: monospace; font-size: 0.8rem"><%= notice.createdBy %></span>
+    </div>
+    <% } %>
+    <% if (notice.updatedBy) { %>
+    <div class="meta-item">
+      <label>Modificado por</label>
+      <span style="font-family: monospace; font-size: 0.8rem"><%= notice.updatedBy %></span>
+    </div>
+    <% } %>
+  </div>
+
+  <div class="detail-footer">
+    <span>Creado <strong><%= new Date(notice.createdAt).toLocaleString('es') %></strong></span>
+    <span>·</span>
+    <span>Actualizado <strong><%= new Date(notice.updatedAt).toLocaleString('es') %></strong></span>
+  </div>
+</div>

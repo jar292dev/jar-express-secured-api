@@ -1,0 +1,276 @@
+<style>
+  .back { margin-bottom: 1.5rem; }
+
+  .user-detail {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .side-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .side-avatar {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+
+  .avatar-lg {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.875rem;
+  }
+
+  .side-name  { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem; }
+  .side-email { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+
+  .side-info {
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.825rem;
+  }
+
+  .info-row .label { color: var(--text-muted); }
+
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .badge-admin     { background: #3d2e0a; color: #f59e0b; }
+  .badge-moderator { background: #1e3a5f; color: #3b82f6; }
+  .badge-user      { background: #1f1f1f; color: #888; border: 1px solid #333; }
+  .badge-active    { background: #0f3022; color: #22c55e; }
+  .badge-inactive  { background: #3d1515; color: #ef4444; }
+
+  .detail-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .detail-header {
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .detail-header h2 { font-size: 0.95rem; font-weight: 600; }
+
+  .detail-grid {
+    padding: 1.5rem 1.75rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .detail-item label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .detail-item span {
+    font-size: 0.875rem;
+    color: var(--text);
+  }
+
+  .detail-item .mono {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .detail-footer {
+    padding: 1rem 1.75rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .security-section {
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 700px) {
+    .user-detail   { grid-template-columns: 1fr; }
+    .detail-grid   { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="back">
+  <a href="/users" class="btn btn-ghost">← Volver a usuarios</a>
+</div>
+
+<div class="user-detail">
+
+  <!-- Lateral -->
+  <div class="side-card">
+    <div class="side-avatar">
+      <div class="avatar-lg">
+        <%= (user.firstName ?? user.email).charAt(0).toUpperCase() %>
+      </div>
+      <div class="side-name">
+        <%= user.firstName ?? '' %> <%= user.lastName ?? '' %>
+        <% if (!user.firstName && !user.lastName) { %><%= user.email %><% } %>
+      </div>
+      <div class="side-email"><%= user.email %></div>
+      <span class="badge badge-<%= user.role %>"><%= user.role %></span>
+    </div>
+
+    <div class="side-info">
+      <div class="info-row">
+        <span class="label">Estado</span>
+        <span class="badge <%= user.isActive ? 'badge-active' : 'badge-inactive' %>">
+          <%= user.isActive ? 'Activo' : 'Inactivo' %>
+        </span>
+      </div>
+      <div class="info-row">
+        <span class="label">Email verificado</span>
+        <span><%= user.isEmailVerified ? '✓ Sí' : '✗ No' %></span>
+      </div>
+      <div class="info-row">
+        <span class="label">Versión</span>
+        <span><%= user.version %></span>
+      </div>
+      <div class="info-row">
+        <span class="label">Miembro desde</span>
+        <span><%= new Date(user.createdAt).toLocaleDateString('es') %></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detalle -->
+  <div>
+    <div class="detail-card">
+      <div class="detail-header">
+        <h2>Información del usuario</h2>
+        <div style="display:flex;gap:0.5rem">
+          <a href="/users/<%= user.id %>/edit" class="btn btn-ghost">Editar</a>
+          <form method="POST" action="/users/<%= user.id %>/delete" style="margin:0">
+            <button type="submit" class="btn btn-danger"
+              onclick="return confirm('¿Eliminar a <%= user.email %>?')">
+              Eliminar
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>Nombre</label>
+          <span><%= user.firstName ?? '—' %></span>
+        </div>
+        <div class="detail-item">
+          <label>Apellido</label>
+          <span><%= user.lastName ?? '—' %></span>
+        </div>
+        <div class="detail-item">
+          <label>Email</label>
+          <span><%= user.email %></span>
+        </div>
+        <div class="detail-item">
+          <label>Username</label>
+          <span><%= user.username ?? '—' %></span>
+        </div>
+        <div class="detail-item">
+          <label>Idioma</label>
+          <span><%= user.locale ?? '—' %></span>
+        </div>
+        <div class="detail-item">
+          <label>Último acceso</label>
+          <span><%= user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString('es') : '—' %></span>
+        </div>
+        <div class="detail-item">
+          <label>Creado</label>
+          <span><%= new Date(user.createdAt).toLocaleString('es') %></span>
+        </div>
+        <div class="detail-item">
+          <label>Actualizado</label>
+          <span><%= new Date(user.updatedAt).toLocaleString('es') %></span>
+        </div>
+        <% if (user.createdBy) { %>
+        <div class="detail-item">
+          <label>Creado por</label>
+          <span class="mono"><%= user.createdBy %></span>
+        </div>
+        <% } %>
+        <% if (user.updatedBy) { %>
+        <div class="detail-item">
+          <label>Modificado por</label>
+          <span class="mono"><%= user.updatedBy %></span>
+        </div>
+        <% } %>
+        <div class="detail-item" style="grid-column: 1 / -1">
+          <label>ID</label>
+          <span class="mono"><%= user.id %></span>
+        </div>
+      </div>
+
+      <% if (user.failedLoginAttempts > 0 || user.lockedUntil) { %>
+      <div style="padding: 0 1.75rem 1.5rem">
+        <div style="background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 8px; padding: 1rem 1.25rem">
+          <div style="font-size:0.8rem; font-weight:600; color: var(--danger); margin-bottom:0.25rem">
+            ⚠ Alertas de seguridad
+          </div>
+          <% if (user.failedLoginAttempts > 0) { %>
+            <div style="font-size:0.825rem; color: var(--text-muted)">
+              Intentos fallidos de login: <strong style="color:var(--text)"><%= user.failedLoginAttempts %></strong>
+            </div>
+          <% } %>
+          <% if (user.lockedUntil) { %>
+            <div style="font-size:0.825rem; color: var(--text-muted); margin-top:0.25rem">
+              Bloqueado hasta: <strong style="color:var(--text)"><%= new Date(user.lockedUntil).toLocaleString('es') %></strong>
+            </div>
+          <% } %>
+        </div>
+      </div>
+      <% } %>
+
+      <div class="detail-footer">
+        <span style="font-size:0.775rem; color:var(--text-muted)">
+          Última modificación: <%= new Date(user.updatedAt).toLocaleString('es') %>
+        </span>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,289 @@
+<style>
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .profile-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .profile-avatar {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+
+  .avatar-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 1.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .profile-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .profile-email {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .profile-info {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.825rem;
+  }
+
+  .info-row .info-label { color: var(--text-muted); }
+  .info-row .info-value { font-weight: 500; }
+
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .badge-admin     { background: #3d2e0a; color: #f59e0b; }
+  .badge-moderator { background: #1e3a5f; color: #3b82f6; }
+  .badge-user      { background: #1f1f1f; color: #888; border: 1px solid #333; }
+  .badge-active    { background: #0f3022; color: #22c55e; }
+
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .form-card-header {
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .form-body {
+    padding: 1.5rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .field label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+  }
+
+  .field input,
+  .field select {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.875rem;
+    font-size: 0.875rem;
+    color: var(--text);
+    font-family: inherit;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s;
+  }
+
+  .field input:focus,
+  .field select:focus { border-color: var(--accent); }
+
+  .form-footer {
+    padding: 1.1rem 1.75rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .btn:hover { opacity: 0.85; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-danger  { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+
+  .alert {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin: 0 1.75rem;
+  }
+  .alert-error   { background: var(--danger-bg);  color: var(--danger); }
+  .alert-success { background: var(--success-bg); color: var(--success); }
+
+  @media (max-width: 700px) {
+    .profile-grid { grid-template-columns: 1fr; }
+    .form-row     { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="page-header" style="margin-bottom:1.5rem">
+  <h1 style="font-size:1.4rem;font-weight:600;letter-spacing:-0.02em">Mi perfil</h1>
+</div>
+
+<div class="profile-grid">
+
+  <!-- Tarjeta lateral -->
+  <div class="profile-card">
+    <div class="profile-avatar">
+      <div class="avatar-circle">
+        <%= (user.firstName ?? user.email).charAt(0).toUpperCase() %>
+      </div>
+      <div class="profile-name">
+        <%= user.firstName ?? '' %> <%= user.lastName ?? '' %>
+        <% if (!user.firstName && !user.lastName) { %><%= user.email %><% } %>
+      </div>
+      <div class="profile-email"><%= user.email %></div>
+      <span class="badge badge-<%= user.role %>"><%= user.role %></span>
+    </div>
+
+    <div class="profile-info">
+      <div class="info-row">
+        <span class="info-label">Estado</span>
+        <span class="badge badge-active">Activo</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Email verificado</span>
+        <span class="info-value"><%= user.isEmailVerified ? '✓ Sí' : '✗ No' %></span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Último acceso</span>
+        <span class="info-value" style="font-size:0.775rem">
+          <%= user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleDateString('es') : '—' %>
+        </span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Miembro desde</span>
+        <span class="info-value" style="font-size:0.775rem">
+          <%= new Date(user.createdAt).toLocaleDateString('es') %>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario -->
+  <div>
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert alert-error" style="margin: 0 0 1rem"><%= error %></div>
+    <% } %>
+    <% if (typeof query !== 'undefined' && query.updated) { %>
+      <div class="alert alert-success" style="margin: 0 0 1rem">Perfil actualizado correctamente</div>
+    <% } %>
+
+    <div class="form-card">
+      <div class="form-card-header">Información personal</div>
+
+      <form method="POST" action="/me">
+        <div class="form-body">
+          <div class="form-row">
+            <div class="field">
+              <label for="firstName">Nombre</label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                placeholder="Juan"
+                value="<%= user.firstName ?? '' %>"
+              />
+            </div>
+            <div class="field">
+              <label for="lastName">Apellido</label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                placeholder="López"
+                value="<%= user.lastName ?? '' %>"
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Email</label>
+            <input type="email" value="<%= user.email %>" disabled style="opacity:0.5;cursor:not-allowed" />
+          </div>
+
+          <div class="field">
+            <label for="locale">Idioma</label>
+            <select id="locale" name="locale">
+              <% [['es','Español'],['en','English'],['fr','Français'],['de','Deutsch']].forEach(([val, label]) => { %>
+                <option value="<%= val %>" <%= user.locale === val ? 'selected' : '' %>><%= label %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <form method="POST" action="/auth/logout" style="margin:0">
+            <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+          </form>
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>

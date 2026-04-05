@@ -1,0 +1,112 @@
+<div class="page-header">
+  <h1>Avisos</h1>
+  <a href="/notices/create" class="btn btn-primary">+ Nuevo aviso</a>
+</div>
+
+<style>
+  table { width: 100%; border-collapse: collapse; }
+
+  th {
+    text-align: left;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.875rem;
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface-2); }
+
+  .notice-title { font-weight: 500; margin-bottom: 0.2rem; }
+  .notice-body  {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    max-width: 320px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .actions { display: flex; gap: 0.4rem; }
+
+  .empty {
+    text-align: center;
+    padding: 4rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .table-meta {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.775rem;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border-top: 1px solid var(--border);
+  }
+</style>
+
+<div class="card">
+  <% if (notices.length === 0) { %>
+    <div class="empty">No hay avisos todavía</div>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Aviso</th>
+          <th>Nivel</th>
+          <th>Estado</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% notices.forEach(notice => { %>
+          <tr>
+            <td>
+              <div class="notice-title"><%= notice.title %></div>
+              <div class="notice-body"><%= notice.body %></div>
+            </td>
+            <td>
+              <span class="badge badge-<%= notice.level %>"><%= notice.level %></span>
+            </td>
+            <td>
+              <span class="badge <%= notice.isActive ? 'badge-active' : 'badge-inactive' %>">
+                <%= notice.isActive ? 'Activo' : 'Inactivo' %>
+              </span>
+            </td>
+            <td><%= notice.startsAt ? new Date(notice.startsAt).toLocaleDateString('es') : '—' %></td>
+            <td><%= notice.endsAt   ? new Date(notice.endsAt).toLocaleDateString('es')   : '—' %></td>
+            <td>
+              <div class="actions">
+                <a href="/notices/<%= notice.id %>" class="btn btn-ghost">Ver</a>
+                <a href="/notices/<%= notice.id %>/edit" class="btn btn-ghost">Editar</a>
+                <form method="POST" action="/notices/<%= notice.id %>/delete" style="margin:0">
+                  <button type="submit" class="btn btn-danger"
+                    onclick="return confirm('¿Eliminar este aviso?')">
+                    Eliminar
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <div class="table-meta">
+      Mostrando <%= notices.length %> de <%= meta.total %> avisos —
+      Página <%= meta.page %> de <%= meta.pages %>
+    </div>
+  <% } %>
+</div>
