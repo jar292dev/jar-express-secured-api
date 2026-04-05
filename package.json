@@ -16,12 +16,17 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prisma:generate": "prisma generate",
+    "prisma:seed": "prisma db seed",
+    "prisma:seed:test": "NODE_ENV=test tsx prisma/seeds/test.seed.ts",
     "prisma:migrate": "prisma migrate dev",
     "prisma:schema:export": "npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > docs/schema.sql"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jar292dev/jar-express-secured-api.git"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "keywords": [
     "jar",
