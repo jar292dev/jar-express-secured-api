@@ -1,5 +1,5 @@
 {
-  "name": "jar-express-base-api",
+  "name": "jar-express-secured-api",
   "version": "1.0.0",
   "description": "Proyecto desarrollo api simple en Express",
   "main": "src/server.ts",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jar292dev/jar-express-base-api.git"
+    "url": "git+https://github.com/jar292dev/jar-express-secured-api.git"
   },
   "keywords": [
     "jar",
@@ -32,9 +32,9 @@
   "author": "jar292dev",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jar292dev/jar-express-base-api/issues"
+    "url": "https://github.com/jar292dev/jar-express-secured-api/issues"
   },
-  "homepage": "https://github.com/jar292dev/jar-express-base-api#readme",
+  "homepage": "https://github.com/jar292dev/jar-express-secured-api#readme",
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^8.5.0",
     "dotenv": "^17.3.1",

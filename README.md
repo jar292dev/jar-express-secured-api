@@ -1,4 +1,4 @@
-# jar-express-base-api
+# jar-express-secured-api
 
 API REST base construida con **Node.js + Express + TypeScript + Prisma**. Diseñada como plantilla de referencia con arquitectura en capas, validación de esquemas, documentación automática y tests en tres niveles.
 
