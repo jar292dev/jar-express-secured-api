@@ -37,10 +37,21 @@ export class NoticesService extends BaseService<
   async createNotice(data: CreateNoticeDTO, context: RequestContext): Promise<Notice> {
     const existing = await this.repository.findWithFilters({ title: data.title });
     if (existing.data.length > 0) throw new ConflictError('Notice', 'title');
+
+    const isActive =
+      typeof data.isActive === 'string' ? data.isActive === 'true' : (data.isActive ?? false);
+    const startsAt = new Date(data.startsAt!);
+    const endsAt = new Date(data.endsAt!);
+    data = { ...data, isActive, startsAt, endsAt };
     return super.create(data, context);
   }
 
   async updateNotice(id: string, data: UpdateNoticeDTO, context: RequestContext): Promise<Notice> {
+    const isActive =
+      typeof data.isActive === 'string' ? data.isActive === 'true' : (data.isActive ?? false);
+    const startsAt = new Date(data.startsAt!);
+    const endsAt = new Date(data.endsAt!);
+    data = { ...data, isActive, startsAt, endsAt };
     return super.update(id, data, context);
   }
 
